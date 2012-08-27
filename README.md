@@ -1,6 +1,8 @@
 browserver-router
 =================
 
+[![Build Status](https://secure.travis-ci.org/jed/browserver-router.png?branch=master)](http://travis-ci.org/jed/browserver-router)
+
 This is a simple and unambitious router implementation that can be used in the browser or any CommonJS environment. It has no dependencies, and weighs in at 462 minizipped bytes. It was designed for [browserver](http://browserver.org), but will work with any server that conforms to the node.js HTTP spec (in which handlers take have a `(req, res)` signature, where `req` has `url` and `method` properties, and `res` has `writeHead` and `end` methods).
 
 Example
