@@ -45,6 +45,7 @@ If a `handler` function is provided, it will be fired when the route is matched,
 
 If a `methodMap` object is provided, it will be used to disambiguate between methods of a given route by specifying them as keys, with the handlers for the values.
 
-### router[404] and router[405]
+### router[404]
+### router[405]
 
-These are where the default handlers lives. Override them to provide your own fallback logic.
+These properties hold the default handlers. Override them to provide your own fallback logic.
