@@ -1,0 +1,15 @@
+{
+  "name": "browserver-router",
+  "version": "0.1.0",
+  "description": "A platform-agnostic router for HTTP listeners that follow the node.js spec",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jed/browserver-router.git"
+  },
+  "author": "Jed Schmidt <tr@nslator.jp>",
+  "license": "BSD"
+}
