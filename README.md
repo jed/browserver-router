@@ -8,9 +8,13 @@ This is a simple and unambitious router implementation that can be used in the b
 Example
 -------
 
+### In node.js
+
 ```javascript
+Router = require("router")
+
 var router = new Router({
-  "/hello/:name": {
+  "/salutation/:name": {
     GET: function(req, res) {
       res.writeHead(200)
       res.end("Hello, " + req.params[0] + ".")
@@ -27,6 +31,39 @@ var router = new Router({
     res.end("Matched method: " + req.method)
   }
 })
+
+var http = require("http")
+var server = http.createServer(router.onrequest)
+
+server.listen(8000)
+```
+
+### In the browser with browserver and engine.io
+
+```javascript
+var router = new Router({
+  "/salutation/:name": {
+    GET: function(req, res) {
+      res.writeHead(200)
+      res.end("Hello, " + req.params[0] + ".")
+    },
+
+    DELETE: function(req, res) {
+      res.writeHead(200)
+      res.end("Goodbye, " + req.params[0] + ".")
+    }
+  },
+
+  "/method": function(req, res) {
+    res.writeHead(200)
+    res.end("Matched method: " + req.method)
+  }
+})
+
+var server = http.createServer(router.onrequest)
+var ws = new eio.Socket({host: "myserver.com"})
+
+server.listen(ws)
 ```
 
 API
