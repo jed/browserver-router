@@ -1,31 +1,27 @@
 function Router(routes) {
-  var routeList = this.routes = []
+  var router = this
+
+  this.routes = []
 
   for (var route in routes) this.route(route, routes[route])
 
   this.onrequest = function(req, res) {
-    var i = 0
-    var route
+    var handler = router[404]
 
-    while (route = routeList[i++]) {
-      req.params = req.url.match(route.pattern)
+    for (var i = 0, route; route = router.routes[i++];) {
+      if (req.params = req.url.match(route.pattern)) {
+        handler =
+          route.methods[req.method] ||
+          route.methods["*"] ||
+          router[405]
 
-      if (!req.params) continue
+        req.params.shift()
 
-      req.params.shift()
-
-      route = route.methods[req.method]
-
-      if (route) return route.apply(this, arguments)
-
-      res.writeHead(405, {"Content-Type": "text/plain"})
-      res.end("Method not allowed")
-
-      return
+        break
+      }
     }
 
-    res.writeHead(404, {"Content-Type": "text/plain"})
-    res.end("Not found")
+    handler.apply(this, arguments)
   }
 }
 
@@ -33,9 +29,11 @@ function Router(routes) {
 // http://backbonejs.org/docs/backbone.html#section-116
 Router.prototype.route = function(route, methods) {
   route = route
-    .replace(/:\w+/g                   , "\\$&"    )
+    .replace(/[-[\]{}()+?.,\\^$|#\s]/g , "\\$&"    )
+    .replace(/:\w+/g                   , "(.*?)"   )
     .replace(/\*\w+/g                  , "([^\/]+)")
-    .replace(/[-[\]{}()+?.,\\^$|#\s]/g , "(.*?)"   )
+
+  if (typeof methods == "function") methods = {"*": methods}
 
   this.routes.push({
     pattern: new RegExp("^" + route + "$"),
@@ -43,6 +41,16 @@ Router.prototype.route = function(route, methods) {
   })
 
   return this
+}
+
+Router.prototype[404] = function(req, res) {
+  res.writeHead(404, {"Content-Type": "text/plain"})
+  res.end("Not found")
+}
+
+Router.prototype[405] = function(req, res) {
+  res.writeHead(405, {"Content-Type": "text/plain"})
+  res.end("Method not allowed")
 }
 
 if (typeof require == "function" && typeof module != "undefined") {
