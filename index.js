@@ -25,8 +25,6 @@ function Router(routes) {
   }
 }
 
-// Same route string definitions patterns as Backbone.js
-// http://backbonejs.org/#Router-route
 Router.prototype.route = function(route, methods) {
   route = route
     .replace(/[-[\]{}()+?.,\\^$|#\s]/g , "\\$&"    )
