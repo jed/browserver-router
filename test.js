@@ -7,6 +7,13 @@ var router = new Router({
       res.writeHead(200)
       res.end("OK")
     }
+  },
+
+  "/hello/:name": {
+    GET: function(req, res) {
+      res.writeHead(200)
+      res.end("Hello, " + req.params[0] + ".")
+    }
   }
 })
 
@@ -20,6 +27,14 @@ router.onrequest(
   {
     writeHead: function(code){ assert.equal(code, 200) },
     end: function(data){ assert.equal(data, "OK") }
+  }
+)
+
+router.onrequest(
+  {url: "/hello/dude", method: "GET"},
+  {
+    writeHead: function(code){ assert.equal(code, 200) },
+    end: function(data){ assert.equal(data, "Hello, dude.") }
   }
 )
 
