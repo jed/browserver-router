@@ -26,12 +26,12 @@ function Router(routes) {
 }
 
 // Same route string definitions patterns as Backbone.js
-// http://backbonejs.org/docs/backbone.html#section-116
+// http://backbonejs.org/#Router-route
 Router.prototype.route = function(route, methods) {
   route = route
     .replace(/[-[\]{}()+?.,\\^$|#\s]/g , "\\$&"    )
-    .replace(/:\w+/g                   , "(.*?)"   )
-    .replace(/\*\w+/g                  , "([^\/]+)")
+    .replace(/:\w+/g                   , "([^\/]+)")
+    .replace(/\*\w+/g                  , "(.*?)"   )
 
   if (typeof methods == "function") methods = {"*": methods}
 
