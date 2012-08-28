@@ -118,7 +118,7 @@ Handlers can either use the standard `function(req, res){}` signature, or a `fun
 
 ```javascript
 router.route("/random-error", function(req) {
-  var ok = Boolean(Math.random() > .5)
+  var ok = Math.random() > .5
 
   if (!ok) {
     // equivalent to
