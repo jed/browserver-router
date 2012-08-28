@@ -3,7 +3,14 @@ browserver-router
 
 [![Build Status](https://secure.travis-ci.org/jed/browserver-router.png?branch=master)](http://travis-ci.org/jed/browserver-router)
 
-This is a simple and unambitious router implementation that can be used either in the browser, or in any CommonJS environment. It has no dependencies, and weighs in at 462 minizipped bytes. It was designed for [browserver](http://browserver.org), but will work with any server that conforms to the node.js HTTP spec (in which handlers take have a `(req, res)` signature, where `req` has `url` and `method` properties, and `res` has `writeHead` and `end` methods).
+This is a simple and unambitious router implementation that can be used in either the browser or any CommonJS environment. It was designed for [browserver](http://browserver.org), but will work with any server that conforms to the [node.js](http://nodejs.org) `http.Server` spec.
+
+Features
+--------
+
+- **Small**: 548 minizipped bytes of dependency-free code
+- **Portable**: works in the browser and on node.js
+- **Easy**: response can be omitted to return a `204` (or `500` if the route throws)
 
 Example
 -------
@@ -11,7 +18,7 @@ Example
 ### In node.js
 
 ```javascript
-Router = require("router")
+var Router = require("router")
 
 var router = new Router({
   "/salutation/:name": {
@@ -71,18 +78,47 @@ API
 
 ### router = new Router([Object routes])
 
-Creates a new router. `routes` is optional, and can be an object where each key is a route pattern, and each value is either a route handler function, or object with methods for keys and route handler functions for values.
+Creates a new router. If a `routes` object is passed, it will `.route(key, value)` will be called for each key.
 
-### router.route([String route], [Function handler])
+```javascript
+var router = new Router({
+  "/": {
+    GET: function(req, res) {
+      res.writeHead(200)
+      res.end("OK")
+    }
+  }
+})
+```
+
 ### router.route([String route], [Object methodMap])
 
-Adds a route to match. Both arguments are required. The `route` string is compiled into a regular expression, using the same logic as the [Backbone.js router](http://backbonejs.org/#Router-route), in which `:param` strings match a single url component between slashes and `*` splats match any number of url components. Any matching parameters are used to populate the `req.params` array by match position.
+Adds a route to match. Both arguments are required.
 
-If a `handler` function is provided, it will be fired when the route is matched, for any request method.
+```javascript
+router.route("/salutation/:name", {
+  GET: function(req, res) {
+    res.writeHead(200)
+    res.end("Hello, " + req.params[0] + ".")
+  },
 
-If a `methodMap` object is provided, it will be used to disambiguate between methods of a given route by specifying them as keys, with the handlers for the values.
+  DELETE: function(req, res) {
+    res.writeHead(200)
+    res.end("Goodbye, " + req.params[0] + ".")
+  }
+})
+```
 
-### router[404]
-### router[405]
+The `route` string is compiled into a regular expression, using the same logic as the [Backbone.js router](http://backbonejs.org/#Router-route), in which `:param` strings match a single url component between slashes and `*` splats match any number of url components. Any matching parameters are used to populate the `req.params` array by match position.
 
-These properties hold the default handlers. Override them to provide your own fallback logic.
+The `methodMap` object maps method names (such as `GET` and `POST`) to handlers.
+A fallback handler that matches all routes can be specified using `*` as the method name.
+
+Handlers can either use the standard `function(req, res){}` signature, or a `function(req){}` signature with the response omitted, in which case:
+
+- a `204 No Content` is returned if the handler does not throw
+- a `500 Internal Server Error` is returned if the handler does throw, with the body set to the error's `message` property.
+
+### router.route([String route], [Function handler])
+
+A convenient shortcut for `router.route(route, {"*": handler})`, to fire on any otherwise unhandled method.

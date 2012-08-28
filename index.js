@@ -1,27 +1,41 @@
 function Router(routes) {
-  var router = this
+  var route, router = this
 
   this.routes = []
 
-  for (var route in routes) this.route(route, routes[route])
+  for (route in routes) this.route(route, routes[route])
 
   this.onrequest = function(req, res) {
-    var handler = router[404]
+    var i = 0, route, error
 
-    for (var i = 0, route; route = router.routes[i++];) {
-      if (req.params = req.url.match(route.pattern)) {
-        handler =
-          route.methods[req.method] ||
-          route.methods["*"] ||
-          router[405]
+    while (route = router.routes[i++]) {
+      req.params = req.url.match(route.pattern)
 
-        req.params.shift()
+      if (!req.params) continue
 
-        break
+      req.params.shift()
+      route = route.methods[req.method] || route.methods["*"]
+
+      if (!route) {
+        error = new Error("Method Not Allowed")
+        error.statusCode = 405
+        router.onerror(error, res)
       }
+
+      else try {
+        route.apply(this, arguments)
+
+        if (route.length == 1) res.writeHead(204), res.end()
+      }
+
+      catch (error) { router.onerror(error, res) }
+
+      return
     }
 
-    handler.apply(this, arguments)
+    error = new Error("Not Found")
+    error.statusCode = 404
+    router.onerror(error, res)
   }
 }
 
@@ -41,14 +55,9 @@ Router.prototype.route = function(route, methods) {
   return this
 }
 
-Router.prototype[404] = function(req, res) {
-  res.writeHead(404, {"Content-Type": "text/plain"})
-  res.end("Not found")
-}
-
-Router.prototype[405] = function(req, res) {
-  res.writeHead(405, {"Content-Type": "text/plain"})
-  res.end("Method not allowed")
+Router.prototype.onerror = function(err, res) {
+  res.writeHead(err.statusCode || 500, {"Content-Type": "text/plain"})
+  res.end(err.message || "Internal Server Error")
 }
 
 if (typeof require == "function" && typeof module != "undefined") {
