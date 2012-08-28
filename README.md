@@ -3,7 +3,7 @@ browserver-router
 
 [![Build Status](https://secure.travis-ci.org/jed/browserver-router.png?branch=master)](http://travis-ci.org/jed/browserver-router)
 
-This is a simple and unambitious router implementation that can be used in either the browser or any CommonJS environment. It was designed for [browserver](http://browserver.org), but will work with any server that conforms to the [node.js](http://nodejs.org) `http.Server` spec.
+This is a simple and unambitious router implementation that can be used in either the browser or any CommonJS environment. It was designed for [browserver](http://browserver.org), but will work with any server that conforms to the [node.js](http://nodejs.org) `http.Server` API.
 
 Features
 --------
