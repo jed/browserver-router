@@ -30,6 +30,10 @@ var router = new Router({
     DELETE: function(req, res) {
       res.writeHead(200)
       res.end("Goodbye, " + req.params[0] + ".")
+    },
+
+    "*": function(req) {
+      throw new Error("No such salutation")
     }
   },
 
@@ -58,6 +62,10 @@ var router = new Router({
     DELETE: function(req, res) {
       res.writeHead(200)
       res.end("Goodbye, " + req.params[0] + ".")
+    },
+
+    "*": function(req) {
+      throw new Error("No such salutation")
     }
   },
 
