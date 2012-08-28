@@ -1,11 +1,5 @@
 function Router(routes) {
-  var route, router = this
-
-  this.routes = []
-
-  for (route in routes) this.route(route, routes[route])
-
-  this.onrequest = function(req, res) {
+  function router(req, res) {
     var i = 0, route, error
 
     while (route = router.routes[i++]) {
@@ -37,27 +31,33 @@ function Router(routes) {
     error.statusCode = 404
     router.onerror(error, res)
   }
-}
 
-Router.prototype.route = function(route, methods) {
-  route = route
-    .replace(/[-[\]{}()+?.,\\^$|#\s]/g , "\\$&"    )
-    .replace(/:\w+/g                   , "([^\/]+)")
-    .replace(/\*\w+/g                  , "(.*?)"   )
+  router.routes = []
 
-  if (typeof methods == "function") methods = {"*": methods}
+  router.route = function(route, methods) {
+    route = route
+      .replace(/[-[\]{}()+?.,\\^$|#\s]/g , "\\$&"    )
+      .replace(/:\w+/g                   , "([^\/]+)")
+      .replace(/\*\w+/g                  , "(.*?)"   )
 
-  this.routes.push({
-    pattern: new RegExp("^" + route + "$"),
-    methods: methods
-  })
+    if (typeof methods == "function") methods = {"*": methods}
 
-  return this
-}
+    router.routes.push({
+      pattern: new RegExp("^" + route + "$"),
+      methods: methods
+    })
 
-Router.prototype.onerror = function(err, res) {
-  res.writeHead(err.statusCode || 500, {"Content-Type": "text/plain"})
-  res.end(err.message || "Internal Server Error")
+    return router
+  }
+
+  router.onerror = function(err, res) {
+    res.writeHead(err.statusCode || 500, {"Content-Type": "text/plain"})
+    res.end(err.message || "Internal Server Error")
+  }
+
+  for (var route in routes) router.route(route, routes[route])
+
+  return router
 }
 
 if (typeof require == "function" && typeof module != "undefined") {

@@ -20,7 +20,7 @@ Example
 ```javascript
 var Router = require("router")
 
-var router = new Router({
+var router = Router({
   "/salutation/:name": {
     GET: function(req, res) {
       res.writeHead(200)
@@ -44,7 +44,7 @@ var router = new Router({
 })
 
 var http = require("http")
-var server = http.createServer(router.onrequest)
+var server = http.createServer(router)
 
 server.listen(8000)
 ```
@@ -52,7 +52,7 @@ server.listen(8000)
 ### In the browser with [browserver](http://browserver.org) and [engine.io](https://github.com/LearnBoost/engine.io)
 
 ```javascript
-var router = new Router({
+var router = Router({
   "/salutation/:name": {
     GET: function(req, res) {
       res.writeHead(200)
@@ -75,7 +75,7 @@ var router = new Router({
   }
 })
 
-var server = http.createServer(router.onrequest)
+var server = http.createServer(router)
 var ws = new eio.Socket({host: "myserver.com"})
 
 server.listen(ws)
@@ -86,10 +86,10 @@ API
 
 ### router = new Router([Object routes])
 
-Creates a new router. If a `routes` object is passed, it will `.route(key, value)` will be called for each key.
+Creates a new router, which is a function with the standard `(req, res)` signature. If a `routes` object is passed, it will `.route(key, value)` will be called for each key.
 
 ```javascript
-var router = new Router({
+var router = Router({
   "/": {
     GET: function(req, res) {
       res.writeHead(200)

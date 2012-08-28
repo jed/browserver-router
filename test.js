@@ -1,7 +1,7 @@
 var assert = require("assert")
 var Router = require("./")
 
-var router = new Router({
+var router = Router({
   "/": {
     GET: function(req, res) {
       res.writeHead(200)
@@ -34,7 +34,7 @@ router.route("/nomethod", function(req, res) {
 
 var called = false
 
-router.onrequest(
+router(
   {url: "/", method: "GET"},
   {
     writeHead: function(code){ assert.equal(code, 200) },
@@ -48,7 +48,7 @@ router.onrequest(
 assert(called)
 called = false
 
-router.onrequest(
+router(
   {url: "/hello/dude", method: "GET"},
   {
     writeHead: function(code){ assert.equal(code, 200) },
@@ -62,7 +62,7 @@ router.onrequest(
 assert(called)
 called = false
 
-router.onrequest(
+router(
   {url: "/", method: "PATCH"},
   {
     writeHead: function(code){ assert.equal(code, 405) },
@@ -76,7 +76,7 @@ router.onrequest(
 assert(called)
 called = false
 
-router.onrequest(
+router(
   {url: "/notfound", method: "GET"},
   {
     writeHead: function(code){ assert.equal(code, 404) },
@@ -90,7 +90,7 @@ router.onrequest(
 assert(called)
 called = false
 
-router.onrequest(
+router(
   {url: "/nomethod", method: "PATCH"},
   {
     writeHead: function(code){ assert.equal(code, 200) },
@@ -104,7 +104,7 @@ router.onrequest(
 assert(called)
 called = false
 
-router.onrequest(
+router(
   {url: "/throws", method: "GET"},
   {
     writeHead: function(code){ assert.equal(code, 500) },
@@ -118,7 +118,7 @@ router.onrequest(
 assert(called)
 called = false
 
-router.onrequest(
+router(
   {url: "/nothrow", method: "GET"},
   {
     writeHead: function(code){ assert.equal(code, 204) },
