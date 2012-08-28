@@ -114,10 +114,27 @@ The `route` string is compiled into a regular expression, using the same logic a
 The `methodMap` object maps method names (such as `GET` and `POST`) to handlers.
 A fallback handler that matches all routes can be specified using `*` as the method name.
 
-Handlers can either use the standard `function(req, res){}` signature, or a `function(req){}` signature with the response omitted, in which case:
+Handlers can either use the standard `function(req, res){}` signature, or a `function(req){}` signature with the response omitted, in which the response is automatically generated like this:
 
-- a `204 No Content` is returned if the handler does not throw
-- a `500 Internal Server Error` is returned if the handler does throw, with the body set to the error's `message` property.
+```javascript
+router.route("/random-error", function(req) {
+  var ok = Boolean(Math.random() > .5)
+
+  if (!ok) {
+    // equivalent to
+    // res.writeHead(500, {"Content-Type": "text/plain"})
+    // res.end("An error occurred")
+    throw new Error("An error occurred")
+  }
+
+  else {
+    // equivalent to
+    // res.writeHead(204)
+    // res.end()
+    return
+  }
+})
+```
 
 ### router.route([String route], [Function handler])
 
