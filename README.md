@@ -10,7 +10,7 @@ Features
 
 - **Small**: 548 minizipped bytes of dependency-free code
 - **Portable**: works in the browser and on node.js
-- **Easy**: response can be omitted to return a `204` (or `500` if the route throws)
+- **Easy**: response is automatically generated if omitted
 
 Example
 -------
