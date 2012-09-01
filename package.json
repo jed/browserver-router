@@ -1,6 +1,6 @@
 {
   "name": "browserver-router",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A platform-agnostic router for HTTP listeners that follow the node.js spec",
   "main": "index.js",
   "scripts": {
