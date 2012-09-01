@@ -3,7 +3,7 @@ function Router(routes) {
     var i = 0, route, error
 
     while (route = router.routes[i++]) {
-      req.params = req.url.match(route.pattern)
+      req.params = req.url.split("?", 1)[0].match(route.pattern)
 
       if (!req.params) continue
 
